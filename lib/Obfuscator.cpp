@@ -10,47 +10,41 @@
 //	opt -load-pass-plugin=
 //
 //=======================================================================
+#include "Obfuscator.h"
 
-#include "llvm/IR/LegacyPassManager.h"
 #include "llvm/Passes/PassBuilder.h"
 #include "llvm/Passes/PassPlugin.h"
 #include "llvm/Support/raw_ostream.h"
 
 using namespace llvm;
 
-namespace {
-
 void printName(Function &F) {
-	errs() << "Obfuscator test running: " << F.getName() << "\n";
+  errs() << "Obfuscator test running: " << F.getName() << "\n";
 }
 
-struct Obfuscator : PassInfoMixin<Obfuscator> {
-	PreservedAnalyses run(Function &F, FunctionAnalysisManager &AM) {
-		printName(F);
-		return PreservedAnalyses::all();
-	}
 
-	static bool isRequired() { return true; }
-};
-} // namespace
+PreservedAnalyses Obfuscator::run(Function &F,
+				  FunctionAnalysisManager &FAM) {
+  printName(F);
+  return PreservedAnalyses::all();
+}
 
 //=======================================================================
 // Registration
 //=======================================================================
 llvm::PassPluginLibraryInfo getObfuscatorPluginInfo() {
-	return {LLVM_PLUGIN_API_VERSION, "Obfuscator", LLVM_VERSION_STRING,
-		[](PassBuilder &PB) {
-			PB.registerPipelineParsingCallback(
-				[](StringRef Name, FunctionPassManager &FPM,
-					ArrayRef<PassBuilder::PipelineElement>) {
-					if (Name == "obfuscator") {
-						FPM.addPass(Obfuscator());
-						return true;
-					}
-					return false;
-				});
-			}};
-
+  return {LLVM_PLUGIN_API_VERSION, "Obfuscator", LLVM_VERSION_STRING,
+  [](PassBuilder &PB) {
+    PB.registerPipelineParsingCallback(
+    [](StringRef Name, FunctionPassManager &FPM,
+    ArrayRef<PassBuilder::PipelineElement>) {
+      if (Name == "obfuscator") {
+	FPM.addPass(Obfuscator());
+	  return true;
+	}
+	return false;
+      });
+  }};
 }
 
 extern "C" LLVM_ATTRIBUTE_WEAK ::llvm::PassPluginLibraryInfo
