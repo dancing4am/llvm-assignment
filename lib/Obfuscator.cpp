@@ -18,23 +18,42 @@
 #include "llvm/Passes/PassPlugin.h"
 #include "llvm/Support/raw_ostream.h"
 #include "llvm/Transforms/Utils/BasicBlockUtils.h"
+#include "llvm/IR/IRBuilder.h"
+#include "llvm/IR/Constants.h"
 
 using namespace llvm;
 
-void printName(Function &F) {
-  errs() << "Obfuscator test running: " << F.getName() << "\n";
+static cl::opt<bool> UseBogus("bogus", cl::init(false), cl::desc("Use bogus conditional branch for splitting blocks"));
+
+void printInfo(Function &F) {
+  errs() << "Obfuscator test running " << F.getName()
+         << (UseBogus ? ", using bogus" : "") << "\n";
 }
 
 PreservedAnalyses Obfuscator::run(Function &F,
 				  FunctionAnalysisManager &FAM) {
-  printName(F);
+  printInfo(F);
 
-  std::vector<BasicBlock*> BBs;
+  std::list<BasicBlock*> BBs;
   std::transform(F.begin(), F.end(), std::back_inserter(BBs), [](BasicBlock& BB) { return &BB; });
 
-  for (BasicBlock *BB : BBs) {
-    Instruction *splitPoint = &*std::next(BB->begin(), BB->size() / 2);
-    SplitBlock(BB, splitPoint);
+  if (UseBogus) {
+    for (BasicBlock *BB : BBs) {
+      Instruction *splitPoint = &*std::next(BB->begin(), BB->size() /2);
+
+      IRBuilder<> Builder(BB);
+      ConstantInt *cond = ConstantInt::getTrue(BB->getContext());
+
+      BasicBlock *thenBB = nullptr;
+      BasicBlock *elseBB = nullptr;
+      SplitBlockAndInsertIfThenElse(cond, splitPoint, &BB, &thenBB, &elseBB);
+    }
+  }
+  else {
+    for (BasicBlock *BB : BBs) {
+      Instruction *splitPoint = &*std::next(BB->begin(), BB->size() / 2);
+      SplitBlock(BB, splitPoint);
+    }
   }
 
   return PreservedAnalyses::all();
