@@ -39,14 +39,13 @@ PreservedAnalyses Obfuscator::run(Function &F,
 
   if (UseBogus) {
     for (BasicBlock *BB : BBs) {
-      Instruction *splitPoint = &*std::next(BB->begin(), BB->size() /2);
-
       IRBuilder<> Builder(BB);
       ConstantInt *cond = ConstantInt::getTrue(BB->getContext());
 
       BasicBlock *thenBB = nullptr;
       BasicBlock *elseBB = nullptr;
-      SplitBlockAndInsertIfThenElse(cond, splitPoint, &BB, &thenBB, &elseBB);
+      Instruction *BBHead = BB->getFirstNonPHI();
+      SplitBlockAndInsertIfThenElse(cond, &*BBHead, &thenBB, &elseBB);
     }
   }
   else {
