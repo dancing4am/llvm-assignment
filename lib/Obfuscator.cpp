@@ -7,14 +7,17 @@
 //	and link them with an unconditional branch.
 //
 // USAGE:
-//	opt -load-pass-plugin=
+//	$ opt -load-pass-plugin <BUILD_DIR>/lib//libObfuscator.so `\`
+//      -passes=obfuscator -S <INPUT_LLVM_FILE> > <OUTPUT_LLVM_FILE>
 //
+// License: MIT
 //=======================================================================
 #include "Obfuscator.h"
 
 #include "llvm/Passes/PassBuilder.h"
 #include "llvm/Passes/PassPlugin.h"
 #include "llvm/Support/raw_ostream.h"
+#include "llvm/Transforms/Utils/BasicBlockUtils.h"
 
 using namespace llvm;
 
@@ -22,10 +25,18 @@ void printName(Function &F) {
   errs() << "Obfuscator test running: " << F.getName() << "\n";
 }
 
-
 PreservedAnalyses Obfuscator::run(Function &F,
 				  FunctionAnalysisManager &FAM) {
   printName(F);
+
+  std::vector<BasicBlock*> BBs;
+  std::transform(F.begin(), F.end(), std::back_inserter(BBs), [](BasicBlock& BB) { return &BB; });
+
+  for (BasicBlock *BB : BBs) {
+    Instruction *splitPoint = &*std::next(BB->begin(), BB->size() / 2);
+    SplitBlock(BB, splitPoint);
+  }
+
   return PreservedAnalyses::all();
 }
 
