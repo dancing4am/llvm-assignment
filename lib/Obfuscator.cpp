@@ -3,12 +3,15 @@
 //	Obfuscator.cpp
 //
 // DESCRIPTION:
-//	Splits each basic blocks in a function into two basic blocks,
-//	and link them with an unconditional branch.
+//	By default, this pass splits each basic block in a function into
+//      two basic blocks and link them with an unconditional branch.
+//      When the --bogus flag is on, it splits each basic block in the
+//      same way but adds if-then-else blocks to the original block. 
 //
 // USAGE:
-//	$ opt -load-pass-plugin <BUILD_DIR>/lib//libObfuscator.so `\`
-//      -passes=obfuscator -S <INPUT_LLVM_FILE> > <OUTPUT_LLVM_FILE>
+//	$ opt -load-pass-plugin <BUILD_DIR>/lib//libObfuscator.so `\'
+//      --bogus=<BOOLEAN> -passes=obfuscator -S <INPUT_LLVM_FILE> > '\'
+//      <OUTPUT_LLVM_FILE>
 //
 // License: MIT
 //=======================================================================
