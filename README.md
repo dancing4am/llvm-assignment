@@ -73,7 +73,7 @@ $LLVM_DIR/bin/opt -load-pass-plugin <BUILD_DIR>/lib/libObfuscator.{so|dylib} --b
 -disable-output <INPUT_LLVM_FILE>
 ```
 
->Above description is mostly copied for convenience from [llvm-tutor README](https://github.com/banach-space/llvm-tutor?tab=readme-ov-file).
+>Above description is mostly copied from [llvm-tutor README](https://github.com/banach-space/llvm-tutor?tab=readme-ov-file) for convenience.
 
 
 
