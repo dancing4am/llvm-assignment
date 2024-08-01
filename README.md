@@ -61,7 +61,7 @@ $LLVM_DIR/bin/clang -O1 -S -emit-llvm <source/dir/llvm/assignment>/inputs/input_
 ### Generating Output
 
 ```
-# watch out '>' betweeon input and output
+# watch out '>' between input and output
 $LLVM_DIR/bin/opt -load-pass-plugin <BUILD_DIR>/lib/libObfuscator.{so|dylib} --bogus=<BOOLEAN> -passes=obfuscator
 -S <INPUT_LLVM_FILE> > <OUTPUT_LLVM_FILE>
 ```
