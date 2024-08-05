@@ -16,7 +16,7 @@
 //      -S <INPUT_LLVM_FILE> > <OUTPUT_LLVM_FILE>
 //
 // - WITHOUT GENERATING FILE
-//    $ LLVM_DIR/bin/pot -load-pass-plugin `\'
+//    $ LLVM_DIR/bin/opt -load-pass-plugin `\'
 //      <BUILD_DIR>/lib/libObfuscator.so `\'
 //      --bogus=<BOOLEAN> -passes=obfuscator `\'
 //      -diable-output <INPUT_LLVM_FILE>
@@ -45,7 +45,7 @@ PreservedAnalyses Obfuscator::run(Function &F,
 				  FunctionAnalysisManager &FAM) {
   printInfo(F);
 
-  std::list<BasicBlock*> BBs;
+  std::vector<BasicBlock*> BBs;
   std::transform(F.begin(), F.end(), std::back_inserter(BBs), [](BasicBlock& BB) { return &BB; });
 
   if (UseBogus) {
