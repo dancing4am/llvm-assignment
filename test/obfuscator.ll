@@ -1,15 +1,17 @@
-; RUN:  opt -load-pass-plugin  %shlibdir/libHelloWorld%shlibext -passes=hello-world -disable-output 2>&1 %s\
+; RUN:  opt -load-pass-plugin  %shlibdir/libObfuscator%shlibext -passes=obfuscator -disable-output 2>&1 %s\
 ; RUN:   | FileCheck %s
 
-; Test 'hello-world' when run through opt (both new and legacy PMs)
-; CHECK: (llvm-tutor) Hello from: foo
-; CHECK-NEXT: (llvm-tutor)   number of arguments: 1
-; CHECK-NEXT: (llvm-tutor) Hello from: bar
-; CHECK-NEXT: (llvm-tutor)   number of arguments: 2
-; CHECK-NEXT: (llvm-tutor) Hello from: fez
-; CHECK-NEXT: (llvm-tutor)   number of arguments: 3
-; CHECK-NEXT: (llvm-tutor) Hello from: main
-; CHECK-NEXT: (llvm-tutor)   number of arguments: 2
+unreachable
+
+; Test 'obfuscator' when run through opt (both new and legacy PMs)
+; CHECK: (llvm-assignment) Hello from: foo
+; CHECK-NEXT: (llvm-assignment)   number of arguments: 1
+; CHECK-NEXT: (llvm-assignment) Hello from: bar
+; CHECK-NEXT: (llvm-assignment)   number of arguments: 2
+; CHECK-NEXT: (llvm-assignment) Hello from: fez
+; CHECK-NEXT: (llvm-assignment)   number of arguments: 3
+; CHECK-NEXT: (llvm-assignment) Hello from: main
+; CHECK-NEXT: (llvm-assignment)   number of arguments: 2
 
 define i32 @foo(i32) {
   %2 = shl nsw i32 %0, 1
