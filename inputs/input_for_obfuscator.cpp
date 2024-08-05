@@ -1,14 +1,32 @@
-int foo(int arg_1) { return 1; }
-
-int if_else(int arg_1) {
-  int num;
-  num = 0;
-  num++;
-
-  if (arg_1 > 0) {
-    return num;
-  }
-  else {
-    return num - 1;
-  }
+//=============================================================================
+// FILE:
+//      input_for_obfuscator.cpp
+//
+// DESCRIPTION:
+//      Sample input file for Obfuscator
+//
+// License: MIT
+//=============================================================================
+int foo(int a) {
+return a * 2;
 }
+
+int bar(int a, int b) {
+return (a + foo(b) * 2);
+}
+
+int fez(int a, int b, int c) {
+return (a + bar(a, b) * 2 + c * 3);
+}   
+
+int main(int argc, char *argv[]) {
+int a = 123;
+int ret = 0;
+
+ret += foo(a);
+ret += bar(a, ret);
+ret += fez(a, ret, 123);
+
+
+return ret;
+}   
